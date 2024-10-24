@@ -34,7 +34,7 @@ async function main() {
 
         // Crear un SVG con el texto
         const textToSVG = TextToSVG.loadSync();
-        const svgOptions = { x: 0, y: 0, fontSize: 72, anchor: 'top', attributes: { fill: 'black' } };
+        const svgOptions = { x: 0, y: 0, fontSize: 64, anchor: 'top', attributes: { fill: 'blue', stroke:'blue'} };
         const svgText = textToSVG.getSVG(`${daysRemaining}`, svgOptions);
 
         // Convertir el SVG a una imagen PNG usando sharp
