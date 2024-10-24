@@ -1,52 +1,57 @@
 const express = require('express');
-const Jimp = require('jimp');
+const sharp = require('sharp');
+const TextToSVG = require('text-to-svg');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+async function main() {
+    const app = express();
+    const PORT = process.env.PORT || 3000;
 
-async function main()
-{
     app.get('/image', async (req, res) => {
         const currentDate = new Date();
-    
-        //Obtain limit date
+
+        // Obtener la fecha límite
         const targetDateQString = req.query.targetDate;
-        if(!targetDateQString)
-            return res.status(400).send('Target Date required')
-    
-        var targetDate;
-    
-        try{
+        if (!targetDateQString) return res.status(400).send('Target Date required');
+
+        let targetDate;
+
+        try {
             targetDate = new Date(targetDateQString);
-            if(isNaN(targetDate.getTime()))
-                throw new Error('Invalid date')
+            if (isNaN(targetDate.getTime())) throw new Error('Invalid date');
+        } catch (e) {
+            return res.status(400).send('Invalid Date Format');
         }
-        catch(e){
-            return res.status(400).send('Invalid Date Format')
-        }
-    
-        //Compute days remaining
+
+        // Calcular los días restantes
         const daysRemaining = Math.floor((targetDate - currentDate) / (1000 * 60 * 60 * 24));
-    
-        //Init dynamic image with white background
-        const width = 800;
-        const height = 600;
-        const image = new Jimp(width, height, '#FFFFFF');
-    
-        //Generate Image
-        const font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
-        image.print(font, 50, 100, `${daysRemaining}`);
-    
-        image.getBuffer(Jimp.MIME_PNG, (err, buffer) => {
-            if (err) {
-                res.status(500).send('Error generating image');
-            } else {
-                res.setHeader('Content-Type', 'image/png');
-                res.send(buffer);
+
+        // Crear un SVG con el texto
+        const textToSVG = TextToSVG.loadSync();
+        const svgOptions = { x: 0, y: 0, fontSize: 72, anchor: 'top', attributes: { fill: 'black' } };
+        const svgText = textToSVG.getSVG(`${daysRemaining}`, svgOptions);
+
+        // Convertir el SVG a una imagen PNG usando sharp
+        const svgBuffer = Buffer.from(svgText);
+        sharp({
+            create: {
+                width: 800,
+                height: 600,
+                channels: 4,
+                background: { r: 255, g: 255, b: 255, alpha: 1 }
             }
+        })
+        .composite([{ input: svgBuffer, top: 100, left: 50 }])
+        .png()
+        .toBuffer()
+        .then(buffer => {
+            res.setHeader('Content-Type', 'image/png');
+            res.send(buffer);
+        })
+        .catch(err => {
+            res.status(500).send('Error generating image');
         });
     });
-    
+
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     });
