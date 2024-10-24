@@ -41,10 +41,10 @@ async function main() {
         const svgBuffer = Buffer.from(svgText);
         sharp({
             create: {
-                width: 800,
-                height: 600,
+                width: 160,
+                height: 120,
                 channels: 4,
-                background: { r: 255, g: 255, b: 255, alpha: 1 }
+                background: { r: 255, g: 255, b: 255, alpha: 0 }
             }
         })
         .composite([{ input: svgBuffer, top: 100, left: 50 }])
