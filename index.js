@@ -29,7 +29,7 @@ app.get('/image', async (req, res) => {
     //Init dynamic image with white background
     const width = 800;
     const height = 600;
-    const image = new Jimp(width, height, '#FFFFFF');
+    const image = await Jimp.create(width, height, '#FFFFFF');
 
     //Generate Image
     const font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
