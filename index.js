@@ -47,7 +47,7 @@ async function main() {
                 background: { r: 255, g: 255, b: 255, alpha: 0 }
             }
         })
-        .composite([{ input: svgBuffer, top: 100, left: 50 }])
+        .composite([{ input: svgBuffer, top: 0, left: 0 }])
         .png()
         .toBuffer()
         .then(buffer => {
