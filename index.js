@@ -27,8 +27,10 @@ async function main() {
 
         // Calcular los días restantes
         const daysRemaining = Math.floor((targetDate - currentDate) / (1000 * 60 * 60 * 24));
-        console.log("Current date:")
+        console.log("Current date: ")
         console.log(currentDate)
+        console.log("Days Remaining: ")
+        console.log(daysRemaining)
 
         // Crear un SVG con el texto
         const textToSVG = TextToSVG.loadSync();
