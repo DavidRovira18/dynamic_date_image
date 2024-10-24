@@ -17,6 +17,9 @@ async function main() {
 
         try {
             targetDate = new Date(targetDateQString);
+            console.log("Target Date: ")
+            console.log(targetDate)
+
             if (isNaN(targetDate.getTime())) throw new Error('Invalid date');
         } catch (e) {
             return res.status(400).send('Invalid Date Format');
@@ -24,6 +27,8 @@ async function main() {
 
         // Calcular los días restantes
         const daysRemaining = Math.floor((targetDate - currentDate) / (1000 * 60 * 60 * 24));
+        console.log("Current date:")
+        console.log(currentDate)
 
         // Crear un SVG con el texto
         const textToSVG = TextToSVG.loadSync();
